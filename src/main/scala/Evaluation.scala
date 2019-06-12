@@ -42,7 +42,9 @@ case class PositiveCount(ratingThreshold: Double = 2.0)
     a.ratings.filter(_.rating >= ratingThreshold).size
   }
 }
-
+/**
+  * 评估指标用数字分数量化预测准确度。它可用于比较算法或算法参数设置。
+  * */
 object RecommendationEvaluation extends Evaluation {
   engineEvaluator = (
     RecommendationEngine(),

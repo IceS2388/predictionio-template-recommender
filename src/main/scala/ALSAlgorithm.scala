@@ -17,7 +17,9 @@ case class ALSAlgorithmParams(
   numIterations: Int,
   lambda: Double,
   seed: Option[Long]) extends Params
-
+/**
+  * ALSAlgorithm包括机器学习算法，和设置的参数。指定预测模板如何被构建。
+  * */
 class ALSAlgorithm(val ap: ALSAlgorithmParams)
   extends PAlgorithm[PreparedData, ALSModel, Query, PredictedResult] {
 

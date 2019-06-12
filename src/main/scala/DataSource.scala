@@ -16,7 +16,9 @@ case class DataSourceEvalParams(kFold: Int, queryNum: Int)
 case class DataSourceParams(
   appName: String,
   evalParams: Option[DataSourceEvalParams]) extends Params
-
+/**
+  * DataSource从输入源读入数据，并转变成指定格式。
+  * */
 class DataSource(val dsp: DataSourceParams)
   extends PDataSource[TrainingData,
       EmptyEvaluationInfo, Query, ActualResult] {
