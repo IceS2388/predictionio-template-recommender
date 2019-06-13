@@ -25,6 +25,12 @@ class DataSource(val dsp: DataSourceParams)  extends PDataSource[TrainingData,Em
 
   def getRatings(sc: SparkContext): RDD[Rating] = {
 
+    /**
+      * PEventStore是一个object类型，提供访问PredictionIO Event Server收集的数据的方法。PEventStore.find(...)
+      * PredictionIO automatically loads the parameters of datasource specified in MyRecommendation/engine.json,
+      * including appName, to dsp.
+      * PredictionIO自动加载从engine.json中设定的参数，包括appName到dsp中。
+      * */
     val eventsRDD: RDD[Event] = PEventStore.find(
       appName = dsp.appName,
       entityType = Some("user"),
@@ -57,6 +63,9 @@ class DataSource(val dsp: DataSourceParams)  extends PDataSource[TrainingData,Em
 
   override
   def readTraining(sc: SparkContext): TrainingData = {
+    /**
+      * 从Event Store(Event Server的数据仓库中)读取，选择数据，然后返回TrainningData
+      * */
     new TrainingData(getRatings(sc))
   }
 
@@ -90,13 +99,16 @@ class DataSource(val dsp: DataSourceParams)  extends PDataSource[TrainingData,Em
   * 用户ID
   * 物品ID
   * 评分
+  * Spark MLlib's Rating类，只能使用Int类型的userID和itemID，为了灵活性，自定义一个String类型userID和itemID的Rating。
   * */
 case class Rating(
   user: String,
   item: String,
   rating: Double
 )
-
+/**
+  * TrainingData包含所有上面定义的Rating类型数据。
+  * */
 class TrainingData(
   val ratings: RDD[Rating]
 ) extends Serializable {
