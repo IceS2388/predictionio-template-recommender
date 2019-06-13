@@ -10,12 +10,16 @@ import org.apache.spark.rdd.RDD
 class Preparator
   extends PPreparator[TrainingData, PreparedData] {
 
+  /**简单把数据封装一下*/
   override
   def prepare(sc: SparkContext, trainingData: TrainingData): PreparedData = {
+
     new PreparedData(ratings = trainingData.ratings)
   }
 }
-
+/**
+  * 一个可序列化的只包含ratings的RDD
+  * */
 class PreparedData(
   val ratings: RDD[Rating]
 ) extends Serializable

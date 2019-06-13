@@ -19,9 +19,7 @@ case class DataSourceParams(
 /**
   * DataSource从输入源读入数据，并转变成指定格式。
   * */
-class DataSource(val dsp: DataSourceParams)
-  extends PDataSource[TrainingData,
-      EmptyEvaluationInfo, Query, ActualResult] {
+class DataSource(val dsp: DataSourceParams)  extends PDataSource[TrainingData,EmptyEvaluationInfo, Query, ActualResult] {
 
   @transient lazy val logger = Logger[this.type]
 
@@ -87,7 +85,12 @@ class DataSource(val dsp: DataSourceParams)
     }}
   }
 }
-
+/**
+  * 评分:
+  * 用户ID
+  * 物品ID
+  * 评分
+  * */
 case class Rating(
   user: String,
   item: String,

@@ -14,28 +14,26 @@ import org.apache.spark.rdd.RDD
 
 class ALSModel(
     override val rank: Int,
-    override val userFeatures: RDD[(Int, Array[Double])],
-    override val productFeatures: RDD[(Int, Array[Double])],
+    override val userFeatures: RDD[(Int, Array[Double])],//用户的数据
+    override val productFeatures: RDD[(Int, Array[Double])],//产品数据
     val userStringIntMap: BiMap[String, Int],
     val itemStringIntMap: BiMap[String, Int])
   extends MatrixFactorizationModel(rank, userFeatures, productFeatures)
   with PersistentModel[ALSAlgorithmParams] {
 
   override
-  def save(id: String, params: ALSAlgorithmParams,
-    sc: SparkContext): Boolean = {
+  def save(id: String, params: ALSAlgorithmParams,sc: SparkContext): Boolean = {
 
     sc.parallelize(Seq(rank)).saveAsObjectFile(s"/tmp/${id}/rank")
     userFeatures.saveAsObjectFile(s"/tmp/${id}/userFeatures")
     productFeatures.saveAsObjectFile(s"/tmp/${id}/productFeatures")
-    sc.parallelize(Seq(userStringIntMap))
-      .saveAsObjectFile(s"/tmp/${id}/userStringIntMap")
-    sc.parallelize(Seq(itemStringIntMap))
-      .saveAsObjectFile(s"/tmp/${id}/itemStringIntMap")
+    sc.parallelize(Seq(userStringIntMap)).saveAsObjectFile(s"/tmp/${id}/userStringIntMap")
+    sc.parallelize(Seq(itemStringIntMap)).saveAsObjectFile(s"/tmp/${id}/itemStringIntMap")
     true
   }
 
-  override def toString = {
+  override
+  def toString = {
     s"userFeatures: [${userFeatures.count()}]" +
     s"(${userFeatures.take(2).toList}...)" +
     s" productFeatures: [${productFeatures.count()}]" +
@@ -47,10 +45,9 @@ class ALSModel(
   }
 }
 
-object ALSModel
-  extends PersistentModelLoader[ALSAlgorithmParams, ALSModel] {
-  def apply(id: String, params: ALSAlgorithmParams,
-    sc: Option[SparkContext]) = {
+object ALSModel  extends PersistentModelLoader[ALSAlgorithmParams, ALSModel] {
+
+  def apply(id: String, params: ALSAlgorithmParams,sc: Option[SparkContext]) = {
     new ALSModel(
       rank = sc.get.objectFile[Int](s"/tmp/${id}/rank").first,
       userFeatures = sc.get.objectFile(s"/tmp/${id}/userFeatures"),
